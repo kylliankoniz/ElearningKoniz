@@ -1,0 +1,14 @@
+# Bỏ qua dependencies của node
+node_modules/
+
+# Bỏ qua biến môi trường (chứa mật khẩu database và jwt secret)
+.env
+.env.local
+
+# Bỏ qua file build của vite
+dist/
+build/
+
+# Bỏ qua file log
+npm-debug.log*
+.DS_Store
