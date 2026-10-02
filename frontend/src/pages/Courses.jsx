@@ -1,72 +1,58 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { Search, Star, Clock } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function Courses() {
-  const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const { t } = useLanguage();
 
-  // Gọi API lấy danh sách khóa học khi trang được tải
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/courses');
-        setCourses(response.data);
-      } catch (err) {
-        setError('Không thể tải danh sách khóa học từ server.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCourses();
-  }, []);
+  const courses = [
+    { id: 1, title: 'React.js từ cơ bản đến nâng cao', instructor: 'Nguyễn Văn A', category: 'Frontend', price: 1299000, rating: 4.8, duration: '32 giờ', thumbnail: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=800&auto=format&fit=crop' },
+    { id: 2, title: 'Node.js & MongoDB Masterclass', instructor: 'Lê Hoàng C', category: 'Backend', price: 1499000, rating: 4.9, duration: '40 giờ', thumbnail: 'https://images.unsplash.com/photo-1555099962-4199c345e5dd?q=80&w=800&auto=format&fit=crop' },
+  ];
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12">
-      <div className="mb-10">
-        <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 mb-2">Khám phá khóa học</h1>
-        <p className="text-gray-500 font-medium">Nâng cao kỹ năng của bạn với các chương trình đào tạo chất lượng cao.</p>
+    <div className="bg-slate-50 min-h-screen pb-24 font-sans">
+      <div className="bg-slate-950 py-20 px-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-indigo-900/40 to-slate-900/40"></div>
+        <div className="relative z-10 max-w-7xl mx-auto text-center">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-6">{t.courses_title}</h1>
+          <p className="text-lg text-slate-400 font-medium mb-10">{t.courses_desc}</p>
+          
+          <div className="max-w-2xl mx-auto relative group">
+            <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+              <Search className="h-5 w-5 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+            </div>
+            <input 
+              type="text" 
+              className="block w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-full text-white placeholder-slate-400 focus:bg-white focus:text-slate-900 focus:placeholder-slate-500 focus:ring-4 focus:ring-indigo-500/30 outline-none transition-all backdrop-blur-md font-medium" 
+              placeholder={t.search_placeholder} 
+            />
+          </div>
+        </div>
       </div>
 
-      {/* Trạng thái Loading / Lỗi */}
-      {loading && <p className="text-gray-400 font-medium">Đang tải danh sách khóa học...</p>}
-      {error && <p className="text-red-500 font-medium">{error}</p>}
-
-      {/* Danh sách khóa học */}
-      {!loading && !error && courses.length === 0 && (
-        <div className="p-12 text-center bg-white rounded-3xl border border-gray-100">
-          <p className="text-gray-400 font-medium">Chưa có khóa học nào trên hệ thống.</p>
-        </div>
-      )}
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="max-w-7xl mx-auto px-6 mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {courses.map((course) => (
-          <div key={course._id} className="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-[0_4px_20px_rgb(0,0,0,0.02)] hover:shadow-md transition-all flex flex-col justify-between">
-            <div>
-              <div className="h-48 bg-gray-100 rounded-2xl mb-6 overflow-hidden flex items-center justify-center text-gray-400 font-semibold">
-                {course.thumbnail ? (
-                  <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover" />
-                ) : (
-                  <span>ElearningKoniz</span>
-                )}
-              </div>
-              <span className="inline-block px-3 py-1 bg-gray-100 text-gray-800 text-xs font-bold rounded-full mb-3">
+          <Link key={course.id} to={`/courses/${course.id}`} className="group flex flex-col bg-white rounded-[32px] border border-slate-200/60 overflow-hidden hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] transition-all duration-500 hover:-translate-y-1.5">
+            <div className="aspect-[16/10] bg-slate-100 relative overflow-hidden shrink-0">
+              <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />
+              <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-4 py-1.5 rounded-full text-[12px] font-bold tracking-wide text-slate-900 uppercase shadow-sm">
                 {course.category}
-              </span>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{course.title}</h3>
-              <p className="text-gray-500 text-sm line-clamp-2 mb-6">{course.description}</p>
+              </div>
             </div>
-            
-            <div className="flex items-center justify-between pt-4 border-t border-gray-50">
-              <span className="text-lg font-extrabold text-black">
-                {course.price === 0 ? 'Miễn phí' : `${course.price.toLocaleString()} đ`}
-              </span>
-              <button className="px-5 py-2.5 text-xs font-semibold text-white bg-black rounded-full hover:bg-gray-800 transition-colors">
-                Xem chi tiết
-              </button>
+            <div className="p-8 flex flex-col flex-1">
+              <h3 className="font-extrabold text-slate-900 text-[18px] leading-snug mb-2 line-clamp-2 group-hover:text-indigo-600 transition-colors">{course.title}</h3>
+              <p className="text-[14px] text-slate-500 font-semibold mb-6">{course.instructor}</p>
+              
+              <div className="mt-auto pt-6 border-t border-slate-100 flex items-center justify-between">
+                <div className="flex items-center gap-4 text-[13px] font-bold text-slate-400">
+                  <span className="flex items-center gap-1.5"><Star className="w-4 h-4 text-amber-400 fill-amber-400" /> {course.rating}</span>
+                  <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" /> {course.duration}</span>
+                </div>
+                <span className="text-[18px] font-black text-indigo-600">{course.price.toLocaleString()}đ</span>
+              </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

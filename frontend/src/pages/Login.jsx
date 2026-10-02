@@ -1,87 +1,67 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { Link } from 'react-router-dom';
+import { BookOpen, Mail, Lock } from 'lucide-react';
 
 export default function Login() {
-  const [formData, setFormData] = useState({ email: '', password: '' });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
-
-    try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', formData);
-      
-      if (response.data.token) {
-        // Lưu thông tin user và token vào localStorage để giữ phiên đăng nhập
-        localStorage.setItem('user', JSON.stringify(response.data));
-        
-        alert('Đăng nhập thành công!');
-        // Tạm thời chuyển hướng về trang chủ hoặc dashboard (sẽ tạo sau)
-        navigate('/dashboard'); 
-      }
-    } catch (err) {
-      setError(err.response?.data?.message || 'Có lỗi xảy ra, vui lòng thử lại.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
-    <div className="flex h-screen items-center justify-center px-4 bg-[#F8F9FA]">
-      <div className="w-full max-w-md p-10 bg-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-        <h2 className="text-4xl font-extrabold tracking-tight mb-2">Đăng nhập</h2>
-        <p className="text-gray-500 text-sm mb-6 font-medium">Chào mừng bạn quay trở lại không gian học tập.</p>
+    <div className="min-h-screen flex">
+      {/* Cột Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center bg-white p-8">
+        <div className="w-full max-w-md">
+          <Link to="/" className="flex items-center gap-2 text-2xl font-extrabold text-gray-900 mb-12">
+            <BookOpen className="w-8 h-8 text-blue-600" />
+            Elearning<span className="text-blue-600">Koniz</span>
+          </Link>
+          
+          <h2 className="text-3xl font-extrabold text-gray-900 mb-2">Chào mừng trở lại!</h2>
+          <p className="text-gray-500 font-medium mb-8">Đăng nhập để tiếp tục hành trình học tập của bạn.</p>
 
-        {error && (
-          <div className="mb-4 p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl">
-            {error}
-          </div>
-        )}
+          <form className="space-y-5">
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2">Email</label>
+              <div className="relative">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input 
+                  type="email" 
+                  placeholder="name@example.com" 
+                  className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100 rounded-2xl font-medium transition-all outline-none"
+                />
+              </div>
+            </div>
+            
+            <div>
+              <div className="flex justify-between items-center mb-2">
+                <label className="block text-sm font-bold text-gray-700">Mật khẩu</label>
+                <a href="#" className="text-sm font-semibold text-blue-600 hover:text-blue-700">Quên mật khẩu?</a>
+              </div>
+              <div className="relative">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input 
+                  type="password" 
+                  placeholder="••••••••" 
+                  className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100 rounded-2xl font-medium transition-all outline-none"
+                />
+              </div>
+            </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <input 
-              type="email" 
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all text-sm" 
-              placeholder="Email của bạn" 
-            />
-          </div>
-          <div>
-            <input 
-              type="password" 
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              className="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-all text-sm" 
-              placeholder="Mật khẩu" 
-            />
-          </div>
-          <button 
-            type="submit" 
-            disabled={loading}
-            className="w-full py-4 mt-2 text-white bg-[#111111] rounded-full font-semibold hover:bg-gray-800 transition-colors disabled:bg-gray-400"
-          >
-            {loading ? 'Đang kiểm tra...' : 'Start Now'}
-          </button>
-        </form>
+            <Link to="/dashboard" className="block w-full py-4 text-center text-white bg-gray-900 rounded-full font-bold hover:bg-gray-800 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 mt-4">
+              Đăng nhập
+            </Link>
+          </form>
 
-        <p className="text-sm text-center text-gray-400 mt-8 font-medium">
-          Chưa có tài khoản? <Link to="/register" className="text-black hover:underline">Khám phá ngay</Link>
-        </p>
+          <p className="text-center text-sm font-medium text-gray-500 mt-8">
+            Chưa có tài khoản? <Link to="/register" className="text-blue-600 font-bold hover:underline">Đăng ký ngay</Link>
+          </p>
+        </div>
+      </div>
+
+      {/* Cột Hình ảnh (Ẩn trên mobile) */}
+      <div className="hidden lg:block lg:w-1/2 bg-blue-50 relative overflow-hidden">
+        <img 
+          src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1600&auto=format&fit=crop" 
+          alt="Học tập" 
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-blue-900/20 mix-blend-multiply"></div>
       </div>
     </div>
   );
